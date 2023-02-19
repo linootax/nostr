@@ -9,8 +9,6 @@ import BountyFeed from "./components/bounty/bountyFeed/bountyFeed";
 
 function App() {
 
-let value = localStorage.getItem("pubkey")
-
   return (
     <div>
       <div>
