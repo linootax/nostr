@@ -1,46 +1,31 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import bountyInfo from "../../../pages/bountyFullInfo";
 import { getEventData } from "../../../utils";
 
 
-
-interface bountyInfo{
-    title: string,
-    description: string,
-    reward:number,
-    author: string,
-    createdAt: string
-    id: string
-}
-
-function shortBountyInfo(data: any) {
+function shortBountyInfo({content, metaData, ids}) {
 
     const navigate = useNavigate()
-    let contentData: string[] = [];
-    let [ids, setIds] = useState([])
-    const content = data.content;
+    const bountyInfor = content;
+    const bountyHunterMetaData = metaData;
+    const bountyIds = ids;
     let i = -1;
 
     function createComponent(i) {
-            console.log(ids.length)
-            return(<div onClick={()=> navigate(`/b/${ids[i]}}`)}>
-                <p>{ids[i]}</p>
-                <p>{content[i]}</p>
+            console.log(bountyIds.length)
+            let finalData = JSON.parse(bountyInfor[i]);
+            let metadatafinal = JSON.parse(bountyHunterMetaData[i])
+            return(<div onClick={()=> navigate(`/b/${bountyIds[i]}`)}>
+                <h3>title: {finalData.title}</h3>
+                <p>poster: {metadatafinal.name}</p>
+                <p>reward: {finalData.reward} sats</p>
             </div>)
     }
 
-    useEffect(()=>{
-        getEventData("id").then((id)=>{
-            contentData.push(id);
-            console.log(id);
-            setIds([contentData][0][0])
-        })
-
-        console.log(ids.length)
-    },[])
-
+console.log(bountyInfor, bountyHunterMetaData, bountyIds)
     return ( <div>
-        {ids.map(()=>{
+        {bountyIds.map(()=>{
             i++
             return(<div>
                 {createComponent(i)}

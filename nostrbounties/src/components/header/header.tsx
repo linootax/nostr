@@ -8,7 +8,7 @@ function Header() {
 
     return ( <div>
         <div>
-            <h1>Logo</h1>
+            <h1 onClick={()=> navigate("/")}>Logo</h1>
         </div>
         <div>
             <button onClick={()=> navigate("/create")}>Create bounty</button>
