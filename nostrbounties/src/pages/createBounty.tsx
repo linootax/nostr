@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {RelayPool} from "nostr-relaypool";
+
 
 import Header from "../components/header/header";
 import Footer from "../components/footer/footer";
-import { useNavigate } from "react-router-dom";
+
 
 
 
@@ -15,6 +18,7 @@ function CreateBounty() {
     let [telegram, setTelegram] = useState(null);
     let [email, setEmail] = useState(null);
     let [whatsapp, setWhatsapp] = useState(null);
+    let [extensionError, setExtensionError] = useState(false)
     let navigate = useNavigate()
     
     let eventData ={
@@ -62,9 +66,46 @@ function CreateBounty() {
             "sig":null
           };
 
-          let finalEventMessage = await window.nostr.signEvent(eventMessage);
-          console.log(finalEventMessage)
-          
+          if(!window.nostr){
+            console.log("you need to install an extension")
+            setExtensionError(true)
+          }
+
+          let EventMessageSigned = await window.nostr.signEvent(eventMessage);
+
+         let relays = ['wss://relay.damus.io', 'wss://nostr.bitcoiner.social'];
+
+         let relayPool = new RelayPool(relays);
+
+let unsub = relayPool.subscribe(
+  [
+    {
+      authors: [
+        "32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
+      ],
+      kinds:[1],
+      limit:10
+    },
+  ],
+  relays,
+  (event, isAfterEose, relayURL) => {
+    console.log(event.kind, isAfterEose, relayURL);
+  },
+  undefined,
+  (events, relayURL) => {
+    console.log(events, relayURL);
+  }
+);
+
+relayPool.onerror((err, relayUrl) => {
+  console.log("RelayPool error", err, " from relay ", relayUrl);
+});
+relayPool.onnotice((relayUrl, notice) => {
+  console.log("RelayPool notice", notice, " from relay ", relayUrl);
+});
+
+
+
     }
 
 
@@ -84,6 +125,7 @@ function CreateBounty() {
             <input type="text" name="email" onChange={handleEmail} placeholder="your email" id="" />
             <input type="text" name="whatsapp" onChange={handleWhatsapp} placeholder="your whatsapp" id="" />
             <button onClick={postEvent}>post bounty</button>
+            {extensionError ? <p>You need an extension to post</p> : null}
         
 
         </div>

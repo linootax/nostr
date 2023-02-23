@@ -42,7 +42,7 @@ useEffect(()=>{
 
 
 return(
-    <div style={{width:"300px"}}>
+    <div>
         <BountyCard content={content} metaData={metaData} ids={ids} />
     </div>
 )
