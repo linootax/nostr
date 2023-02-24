@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import bountyInfo from "../../../pages/bountyFullInfo";
 import { getEventData } from "../../../utils";
 
@@ -16,31 +16,36 @@ function shortBountyInfo({content, metaData, ids}) {
             console.log(bountyIds.length)
             let finalData = JSON.parse(bountyInfor[i]);
             let metadatafinal = JSON.parse(bountyHunterMetaData[i])
+            let fullInfoPath = `/b/${bountyIds[i]}`
             return(
-            <div onClick={()=> navigate(`/b/${bountyIds[i]}`)} class="m-auto overflow-hidden rounded-lg shadow-lg cursor-pointer h-90 w-60 md:w-80 mt-5	">
             
-                <div class="w-full p-4 bg-white">
-                    <p class="font-medium text-indigo-500 text-md">
-                        {metadatafinal.name}
-                    </p>
-                    <p class="mb-2 text-xl font-medium text-gray-800">
-                        {finalData.title}
-                    </p>
-                    <p class="font-light text-gray-400 dark:text-gray-300 text-md">
-                            {finalData.description}
-                        </p>
-                    <div class="flex flex-wrap items-center mt-4 justify-starts">
-                        <div class="text-xs mr-2 py-1.5 px-4 text-gray-600 bg-blue-100 rounded-2xl">
-                            {finalData.reward} sats
-                        </div>
-                        <div >
-                        <button type="button" class="py-1.5 px-4  bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 focus:ring-offset-indigo-200 text-white w-full transition ease-in duration-200 text-center text-base font-semibold shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2  rounded-lg ">
-                        Add to reward
-                        </button>
-                        </div>
-                    </div>
+                <div class="my-2 mx-10 px-10 py-3 justify-between items-center flex shadow-md rounded-md max-w-7xl md: flex-wrap">
+                <div class="p-2">
+                  <div>
+                    <p class="font-sans text-base font-semibold">{finalData.title}</p>
+                  </div>
+                  <div>
+                    <p class="font-sans text-sm font-light">by {metadatafinal.name}</p>
+                  </div>
                 </div>
-        </div>)
+                <div class="p-2 w-250">
+                  <p class="font-sans text-base font-light">
+                    {finalData.reward} sats
+                  </p>
+                  </div>
+                <div class="p-2 w-91">
+                  <p class="text-green-900 font-sans text-base font-light">
+                    open
+                  </p>
+                  </div>
+                <div class="p-2">
+                  <button class="font-sans text-base font-light underline">More info</button>
+                </div>
+                <div class="p-2">
+                  <button class="font-sans text-base font-light bg-blue-700 py-1 px-3 rounded-md text-white">Add to reward</button>
+                </div>
+              </div>
+        )
     }
 
 console.log(bountyInfor, bountyHunterMetaData, bountyIds)

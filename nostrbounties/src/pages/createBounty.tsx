@@ -4,7 +4,6 @@ import {RelayPool} from "nostr-relaypool";
 
 
 import Header from "../components/header/header";
-import Footer from "../components/footer/footer";
 
 
 
@@ -19,6 +18,7 @@ function CreateBounty() {
     let [email, setEmail] = useState(null);
     let [whatsapp, setWhatsapp] = useState(null);
     let [extensionError, setExtensionError] = useState(false)
+    let [emptyFields, setEmptyFields] = useState(false)
     let navigate = useNavigate()
     
     let eventData ={
@@ -38,7 +38,9 @@ function CreateBounty() {
       setDescription(event.target.value)
     }
     const handleReward = (event)=>{
-      setReward(event.target.value)
+      const rewardUnformatted = parseInt(event.target.value);
+      const rewardFormatted = rewardUnformatted.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      setReward(rewardFormatted)
     }
     const handleDiscord = (event)=>{
       setDiscord(event.target.value)
@@ -71,7 +73,15 @@ function CreateBounty() {
             setExtensionError(true)
           }
 
-          let EventMessageSigned = await window.nostr.signEvent(eventMessage);
+          if(!title || !description || !reward){
+            setEmptyFields(true)
+          } else{
+
+            let EventMessageSigned = await window.nostr.signEvent(eventMessage);
+          console.log(EventMessageSigned)
+          }
+
+          
 
          let relays = ['wss://relay.damus.io', 'wss://nostr.bitcoiner.social'];
 
@@ -110,28 +120,58 @@ relayPool.onnotice((relayUrl, notice) => {
 
 
     
-    return ( <div>
+    return ( <div class="max-w-7xl lg:px-30 sm:px-10">
         <div>
             <Header />
         </div>
+        <div class="max-w-7xl lg:px-30 sm:px-12">
+        
         <div>
-          <h1>Create bounty page</h1>
-        
-            <input type="text" name="title" onChange={handleTitle} placeholder="bounty title" id="" />
-            <input type="text" name="description" onChange={handleDescription} placeholder="describe your bounty" id="" />
-            <input type="number" name="satsreward" onChange={handleReward} placeholder="your reward in sats" id="" />
-            <input type="text" name="discord" onChange={handleDiscord} placeholder="your discord user" id="" />
-            <input type="text" name="telegram" onChange={handleTelegram} placeholder="your telegram user" id="" />
-            <input type="text" name="email" onChange={handleEmail} placeholder="your email" id="" />
-            <input type="text" name="whatsapp" onChange={handleWhatsapp} placeholder="your whatsapp" id="" />
-            <button onClick={postEvent}>post bounty</button>
-            {extensionError ? <p>You need an extension to post</p> : null}
-        
-
+            <label class="block text-sm font-medium text-gray-900">Bounty title</label>
+            <input type="text" onChange={handleTitle} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="i.e. Bounty manager" required />
         </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">Bounty description</label>
+            <textarea onChange={handleDescription} class="peer block min-h-[auto] w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="i.e. A simple bounty manager for people..." required></textarea>
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">Bounty reward in Sats</label>
+            <input type="number" onChange={handleReward} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="1200 sats" required />
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">Discord User</label>
+            <input type="text" onChange={handleDiscord} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="UserCandy#6765" />
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">telegram user</label>
+            <input type="text" onChange={handleTelegram} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="@userCandy"/>
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">Email</label>
+            <input type="text" onChange={handleEmail} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="usercandy@gmail.com"/>
+        </div>
+        <div class="mt-4">
+            <label class="block text-sm font-medium text-gray-900">WhatsApp</label>
+            <input type="number" onChange={handleWhatsapp} class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="+12068133616"/>
+        </div>
+        <div class="mt-4 flex">
+        <button onClick={postEvent} class="flex-shrink-0 px-3 py-1 text-base font-semibold text-white bg-purple-600 rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-200">post bounty</button>
+        <div class="px-5">
+        {extensionError ? <p class="text-red-900 ">You need an extension to post</p> : null}
+        {emptyFields ? <p class="text-red-900 ">title, description and reward fields required</p> : null}
+        
+        </div>
+        </div>
+        
+        
+        
+
+        
 
         <div>
-            <Footer />
+        </div> 
+
+
         </div>
         
     </div> );

@@ -1,6 +1,6 @@
 function Footer() {
     return ( <div>
-        <footer class="bg-white dark:bg-gray-800 w-full py-8">
+        <footer class="bg-white dark:bg-gray-800 w-full py-8 ">
     <div class="max-w-screen-xl px-4 mx-auto">
         <ul class="flex flex-wrap justify-between max-w-screen-md mx-auto text-lg font-light">
             <li class="my-2">
